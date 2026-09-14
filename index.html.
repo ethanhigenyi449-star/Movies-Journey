@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movies Journey</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#080808;
+  color:white;
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 5%;
+  background:rgba(0,0,0,.95);
+  border-bottom:1px solid #222;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:bold;
+}
+
+.logo span{
+  color:#e50914;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  margin-left:20px;
+}
+
+/* HERO */
+.hero{
+  min-height:520px;
+  padding:100px 6%;
+  display:flex;
+  align-items:center;
+  background:
+    linear-gradient(90deg,#000 15%,rgba(0,0,0,.75),rgba(0,0,0,.2)),
+    radial-gradient(circle at 80% 40%,#8b1720,#170608 45%,#000);
+}
+
+.hero-content{
+  max-width:650px;
+}
+
+.hero h1{
+  font-size:clamp(42px,7vw,75px);
+  margin:15px 0;
+}
+
+.hero p{
+  color:#ccc;
+  font-size:18px;
+  line-height:1.6;
+}
+
+.hero-buttons{
+  margin-top:25px;
+}
+
+.btn{
+  display:inline-block;
+  padding:12px 20px;
+  border:0;
+  border-radius:6px;
+  background:#e50914;
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  cursor:pointer;
+  margin-right:7px;
+}
+
+.btn:hover{
+  background:#b20710;
+}
+
+.dark-btn{
+  background:#333;
+}
+
+/* SEARCH */
+.search-area{
+  background:#151515;
+  padding:22px 5%;
+}
+
+#search{
+  width:100%;
+  padding:15px;
+  border-radius:7px;
+  border:1px solid #333;
+  background:#222;
+  color:white;
+  font-size:16px;
+}
+
+/* SECTIONS */
+section{
+  padding:40px 5%;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.section-title h2{
+  font-size:25px;
+}
+
+/* CATEGORIES */
+.categories{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.category{
+  padding:11px 17px;
+  border-radius:20px;
+  background:#222;
+  border:1px solid #333;
+  cursor:pointer;
+}
+
+.category:hover,
+.category.active{
+  background:#e50914;
+}
+
+/* MOVIES */
+.movies{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:20px;
+}
+
+.movie{
+  background:#171717;
+  border-radius:8px;
+  overflow:hidden;
+  transition:.25s;
+}
+
+.movie:hover{
+  transform:translateY(-5px);
+}
+
+.poster{
+  height:280px;
+  position:relative;
+  display:flex;
+  align-items:end;
+  padding:15px;
+  background-size:cover;
+  background-position:center;
+}
+
+.poster:after{
+  content:"";
+  position:absolute;
+  inset:45% 0 0;
+  background:linear-gradient(transparent,#000);
+}
+
+.poster h3{
+  position:relative;
+  z-index:2;
+}
+
+.movie-info{
+  padding:15px;
+}
+
+.genre{
+  color:#ff6464;
+  font-size:13px;
+}
+
+.rating{
+  margin:9px 0;
+  color:#ffc107;
+}
+
+.description{
+  color:#aaa;
+  font-size:13px;
+  line-height:1.5;
+  min-height:40px;
+}
+
+.movie-buttons{
+  margin-top:12px;
+}
+
+/* WHATSAPP */
+.whatsapp{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:999;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#25D366;
+  color:white;
+  text-decoration:none;
+  font-size:27px;
+  box-shadow:0 4px 15px #000;
+}
+
+/* FOOTER */
+footer{
+  padding:35px 5%;
+  text-align:center;
+  background:#111;
+  color:#888;
+  margin-top:30px;
+}
+
+.no-results{
+  display:none;
+  text-align:center;
+  color:#999;
+  padding:40px;
+}
+
+/* MOBILE */
+@media(max-width:650px){
+
+  header{
+    padding:14px 4%;
+  }
+
+  nav{
+    display:none;
+  }
+
+  .hero{
+    min-height:450px;
+    padding:70px 5%;
+  }
+
+  .hero h1{
+    font-size:42px;
+  }
+
+  .movies{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+
+  .poster{
+    height:230px;
+  }
+
+  .movie-info{
+    padding:10px;
+  }
+
+  .movie-info h3{
+    font-size:15px;
+  }
+
+  .btn{
+    padding:9px 11px;
+    font-size:12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+
+<div class="logo">
+🎬 Movies <span>Journey</span>
+</div>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#categories">Categories</a>
+<a href="#movies">Movies</a>
+</nav>
+
+</header>
+
+
+<!-- HERO -->
+<section class="hero" id="home">
+
+<div class="hero-content">
+
+<small>WELCOME TO MOVIES JOURNEY</small>
+
+<h1>Your Journey Into Movies</h1>
+
+<p>
+Discover popular movies, explore different genres,
+check ratings and find official trailers.
+</p>
+
+<div class="hero-buttons">
+
+<a href="#movies" class="btn">
+Explore Movies
+</a>
+
+<a href="#categories" class="btn dark-btn">
+Categories
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SEARCH -->
+<div class="search-area">
+
+<input
+type="text"
+id="search"
+placeholder="🔎 Search for a movie..."
+onkeyup="searchMovies()"
+>
+
+</div>
+
+
+<!-- CATEGORIES -->
+<section id="categories">
+
+<div class="section-title">
+<h2>🎭 Categories</h2>
+</div>
+
+<div class="categories">
+
+<button class="category active" onclick="filterGenre('All')">
+All
+</button>
+
+<button class="category" onclick="filterGenre('Action')">
+💥 Action
+</button>
+
+<button class="category" onclick="filterGenre('Romance')">
+❤️ Romance
+</button>
+
+<button class="category" onclick="filterGenre('Comedy')">
+😂 Comedy
+</button>
+
+<button class="category" onclick="filterGenre('Horror')">
+👻 Horror
+</button>
+
+<button class="category" onclick="filterGenre('Drama')">
+🎭 Drama
+</button>
+
+<button class="category" onclick="filterGenre('Sci-Fi')">
+🚀 Sci-Fi
+</button>
+
+</div>
+
+</section>
+
+
+<!-- MOVIES -->
+<section id="movies">
+
+<div class="section-title">
+
+<h2>🔥 Featured Movies</h2>
+
+</div>
+
+<div class="movies" id="movieList">
+
+
+<!-- MOVIE 1 -->
+
+<div class="movie" data-title="The Notebook" data-genre="Romance">
+
+<div class="poster"
+style="background-image:url('https://image.tmdb.org/t/p/w500/rNzQyW4f8B8cY8c1X2Y6z6d1b1.jpg')">
+
+<h3>The Notebook</h3>
+
+</div>
+
+<div class="movie-info">
+
+<h3>The Notebook</h3>
+
+<div class="genre">
+❤️ Romance • 2004
+</div>
+
+<div class="rating">
+★★★★★ 7.8/10
+</div>
+
+<p class="description">
+A romantic story about love, memories and difficult choices.
+</p>
+
+<div class="movie-buttons">
+
+<a
+class="btn"
+target="_blank"
+href="https://www.youtube.com/results?search_query=The+Notebook+official+trailer">
+▶ Trailer
+</a>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MOVIE 2 -->
+
+<div class="movie" data-title="Black Panther" data-genre="Action">
+
+<div class="poster"
+style="background-image:url('https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg')">
+
+<h3>Black Panther</h3>
+
+</div>
+
+<div class="movie-info">
+
+<h3>Black Panther</h3>
+
+<div class="genre">
+💥 Action • 2018
+</div>
+
+<div class="rating">
+★★★★☆ 7.3/10
+</div>
+
+<p class="description">
+A superhero adventure set in the kingdom of Wakanda.
+</p>
+
+<div class="movie-buttons">
+
+<a
+class="btn"
+target="_blank"
+href="https://www.youtube.com/results?search_query=Black+Panther+official+trailer">
+▶ Trailer
+</a>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MOVIE 3 -->
+
+<div class="movie" data-title="Jumanji" data-genre="Comedy">
+
+<div class="poster"
+style="background-image:url('https://image.tmdb.org/t/p/w500/pSgXKPU5h6U6S3S4R7qW2F5F7a.jpg')">
+
+<h3>Jumanji</h3>
+
+</div>
+
+<div class="movie-info">
+
+<h3>Jumanji</h3>
+
+<div class="genre">
+😂 Comedy • 2017
+</div>
+
+<div class="rating">
+★★★★☆ 6.9/10
+</div>
+
+<p class="description">
+An exciting adventure filled with challenges and surprises.
+</p>
+
+<div class="movie-buttons">
+
+<a
+class="btn"
+target="_blank"
+href="https://www.youtube.com/results?search_query=Jumanji+official+trailer">
+▶ Trailer
+</a>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MOVIE 4 -->
+
+<div class="movie" data-title="The Pursuit of Happyness" data-genre="Drama">
+
+<div class="poster"
+style="background-image:url('https://image.tmdb.org/t/p/w500/lBYOKAMcxIvuk9s9Ejh2Yk7q5r.jpg')">
+
+<h3>The Pursuit of Happyness</h3>
+
+</div>
+
+<div class="movie-info">
+
+<h3>The Pursuit of Happyness</h3>
+
+<div class="genre">
+🎭 Drama • 2006
+</div>
+
+<div class="rating">
+★★★★★ 8.0/10
+</div>
+
+<p class="description">
+An inspiring story about perseverance and pursuing a better life.
+</p>
+
+<div class="movie-buttons">
+
+<a
+class="btn"
+target="_blank"
+href="https://www.youtube.com/results?search_query=The+Pursuit+of+Happyness+official+trailer">
+▶ Trailer
+</a>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MOVIE 5 -->
+
+<div class="movie" data-title="Avengers Endgame" data-genre="Action">
+
+<div class="poster"
+style="background-image:url('https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg')">
+
+<h3>Avengers: Endgame</h3>
+
+</div>
+
+<div class="movie-info">
+
+<h3>Avengers: Endgame</h3>
+
+<div class="genre">
+💥 Action • 2019
+</div>
+
+<div class="rating">
+★★★★★ 8.4/10
+</div>
+
+<p class="description">
+The Avengers face the consequences of a devastating battle.
+</p>
+
+<div class="movie-buttons">
+
+<a
+class="btn"
+target="_blank"
+href="https://www.youtube.com/results?search_query=Avengers+Endgame+official+trailer">
+▶ Trailer
+</a>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MOVIE 6 -->
+
+<div class="movie" data-title="Interstellar" data-genre="Sci-Fi">
+
+<div class="poster"
+style="background-image:url('https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg')">
+
+<h3>Interstellar</h3>
+
+</div>
+
+<div class="movie-info">
+
+<h3>Interstellar</h3>
+
+<div class="genre">
+🚀 Sci-Fi • 2014
+</div>
+
+<div class="rating">
+★★★★★ 8.7/10
+</div>
+
+<p class="description">
+Explorers travel beyond our galaxy to find a future for humanity.
+</p>
+
+<div class="movie-buttons">
+
+<a
+class="btn"
+target="_blank"
+href="https://www.youtube.com/results?search_query=Interstellar+official+trailer">
+▶ Trailer
+</a>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="no-results" id="noResults">
+No movies found. Try another search.
+</div>
+
+</section>
+
+
+<!-- WHATSAPP -->
+
+<a
+class="whatsapp"
+href="https://wa.me/256746326794?text=Hello%20Movies%20Journey"
+target="_blank"
+aria-label="Contact Movies Journey on WhatsApp">
+
+💬
+
+</a>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<h3>🎬 Movies Journey</h3>
+
+<p>
+Discover • Explore • Enjoy
+</p>
+
+<p>
+© 2026 Movies Journey
+</p>
+
+</footer>
+
+
+<script>
+
+/* SEARCH */
+
+function searchMovies(){
+
+let search =
+document.getElementById("search")
+.value
+.toLowerCase();
+
+let movies =
+document.querySelectorAll(".movie");
+
+let found = 0;
+
+movies.forEach(function(movie){
+
+let title =
+movie.dataset.title.toLowerCase();
+
+if(title.includes(search)){
+
+movie.style.display="block";
+found++;
+
+}else{
+
+movie.style.display="none";
+
+}
+
+});
+
+document.getElementById("noResults").style.display =
+found === 0 ? "block" : "none";
+
+}
+
+
+/* GENRE FILTER */
+
+function filterGenre(genre){
+
+let movies =
+document.querySelectorAll(".movie");
+
+let buttons =
+document.querySelectorAll(".category");
+
+buttons.forEach(function(button){
+button.classList.remove("active");
+});
+
+event.target.classList.add("active");
+
+let found=0;
+
+movies.forEach(function(movie){
+
+if(
+genre === "All" ||
+movie.dataset.genre === genre
+){
+
+movie.style.display="block";
+found++;
+
+}else{
+
+movie.style.display="none";
+
+}
+
+});
+
+document.getElementById("noResults").style.display =
+found === 0 ? "block" : "none";
+
+}
+
+</script>
+
+</body>
+  </html>
